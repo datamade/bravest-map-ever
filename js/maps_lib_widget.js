@@ -1,7 +1,7 @@
 var MapsWidgetLib = MapsWidgetLib || {};
 var MapsWidgetLib = {
 
-  mapUrl: "http://datamade.github.io/fatalities-map/iframe_test.html",
+  mapUrl: "http://datamade.github.io/bravest-map-ever/iframe_test.html",
 
   doSearch: function() {
     var address = encodeURIComponent($("#search_address").val());

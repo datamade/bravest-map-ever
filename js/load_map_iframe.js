@@ -2,7 +2,7 @@
 
 $(document).ready(function()  
 {  
-  var iframeUrl = 'http://datamade.github.io/fatalities-map/'
+  var iframeUrl = 'http://datamade.github.io/bravest-map-ever/'
 
   var loc = window.location.toString(),  
   params = loc.split('#/?')[1],  

@@ -38,7 +38,7 @@ var MapsLib = {
   recordNamePlural:   "places",
 
   searchRadius:       16100,         //in meters 10 miles
-  defaultZoom:        4,             //zoom level when map is loaded (bigger is more zoomed in)
+  defaultZoom:        2,             //zoom level when map is loaded (bigger is more zoomed in)
   addrMarkerImage:    'images/blue-pushpin.png',
   currentPinpoint:    null,
 
@@ -253,7 +253,7 @@ var MapsLib = {
       queryStr.push(" LIMIT " + limit);
 
     var sql = encodeURIComponent(queryStr.join(" "));
-    console.log(sql)
+    //console.log(sql)
     $.ajax({url: "https://www.googleapis.com/fusiontables/v1/query?sql="+sql+"&callback="+callback+"&key="+MapsLib.googleApiKey, dataType: "jsonp"});
   },
 
