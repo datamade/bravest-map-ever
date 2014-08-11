@@ -21,7 +21,7 @@ var MapsLib = {
 
   //the encrypted Table ID of your Fusion Table (found under File => About)
   //NOTE: numeric IDs will be depricated soon
-  fusionTableId:      "1MOguhQls0FeFpI0LC-xToqTTTlS16jG9UMRyPUD-",
+  fusionTableId:      "195M7ltBY1hfz-RvhNvL1g8kCZa5MYDeWJMVBpskW",
 
   //*New Fusion Tables Requirement* API key. found at https://code.google.com/apis/console/
   //*Important* this key is for demonstration purposes. please register your own.
@@ -154,7 +154,7 @@ var MapsLib = {
         where:  whereClause
       },
       styleId: 2,
-      templateId: 2
+      templateId: 5
     });
     MapsLib.searchrecords.setMap(map);
     MapsLib.getCount(whereClause);
@@ -163,6 +163,7 @@ var MapsLib = {
   populateType: function(json){
     MapsLib.populateDropdown(json, "#select_type", "types", MapsLib.currentType);
 
+    // $("#select_type").select2();
     //run the default search
     MapsLib.doSearch();
   },

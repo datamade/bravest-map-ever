@@ -11,6 +11,7 @@ a:hover { color: #4B58A6; }
 #map_canvas { height: 500px;}
 
 #search_address_group { width: 300px;}
+#select_type { width: 200px;}
 
 .well { margin-bottom: 5px;}
 .alert {margin-top: 5px;}
