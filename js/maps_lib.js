@@ -21,7 +21,7 @@ var MapsLib = {
 
   //the encrypted Table ID of your Fusion Table (found under File => About)
   //NOTE: numeric IDs will be depricated soon
-  fusionTableId:      "1aKJFPotx1y3p04XW3SkikodoLSrNzxyV4104unpO",
+  fusionTableId:      "1MOguhQls0FeFpI0LC-xToqTTTlS16jG9UMRyPUD-",
 
   //*New Fusion Tables Requirement* API key. found at https://code.google.com/apis/console/
   //*Important* this key is for demonstration purposes. please register your own.
@@ -30,12 +30,12 @@ var MapsLib = {
   //name of the location column in your Fusion Table.
   //NOTE: if your location column name has spaces in it, surround it with single quotes
   //example: locationColumn:     "'my location'",
-  locationColumn:     "latitude",
+  locationColumn:     "location",
 
   map_centroid:       new google.maps.LatLng(39.8282, -98.5795), //center that your map defaults to
   locationScope:      "",      //geographical area appended to all address searches
-  recordName:         "fatality",       //for showing number of results
-  recordNamePlural:   "fatalities",
+  recordName:         "place",       //for showing number of results
+  recordNamePlural:   "places",
 
   searchRadius:       16100,         //in meters 10 miles
   defaultZoom:        4,             //zoom level when map is loaded (bigger is more zoomed in)
@@ -73,25 +73,8 @@ var MapsLib = {
     $("#result_box").hide();
     
     //-----custom initializers-------
-    $("#year-slider").slider({
-    orientation: "horizontal",
-    range: true,
-    min: 2003,
-    max: 2012,
-    values: [2003, 2012],
-    step: 1,
-    slide: function (event, ui) {
-    	$("#year-selected-start").html(ui.values[0]);
-        $("#year-selected-end").html(ui.values[1]);
-    },
-    stop: function(event, ui) {
-      MapsLib.doSearch();
-    }
-});
+    MapsLib.query("type","", "type", "type", "", "MapsLib.populateType");
     //-----end of custom initializers-------
-
-    //run the default search
-    MapsLib.doSearch();
   },
 
   doSearch: function(location) {
@@ -102,8 +85,11 @@ var MapsLib = {
     var whereClause = MapsLib.locationColumn + " not equal to ''";
 
     //-----custom filters-------
-whereClause += " AND 'caseyear' >= '" + $("#year-selected-start").html() + "'";
-whereClause += " AND 'caseyear' <= '" + $("#year-selected-end").html() + "'";
+    MapsLib.currentType = $("#select_type").val();
+
+    if ( MapsLib.currentType != "") {
+      whereClause += " AND 'type' = '" + MapsLib.currentType + "'";
+    }
     //-------end of custom filters--------
 
     if (address != "") {
@@ -174,6 +160,26 @@ whereClause += " AND 'caseyear' <= '" + $("#year-selected-end").html() + "'";
     MapsLib.getCount(whereClause);
   },
 
+  populateType: function(json){
+    MapsLib.populateDropdown(json, "#select_type", "types", MapsLib.currentType);
+
+    //run the default search
+    MapsLib.doSearch();
+  },
+
+  populateDropdown: function(json, selector, name, selected_val) {
+    MapsLib.handleError(json);
+
+    var dropdown_options = "<option value=''>All " + name + "</option>"
+    $.each(json['rows'], function(i, obj){
+      if (obj[0] != "" && obj[0] != "-")
+        dropdown_options += "<option value='" + obj[0] + "'>" + obj[0] + "</option>";
+    });
+
+    $(selector).html(dropdown_options);
+  $(selector).val(selected_val);
+  },
+
   clearSearch: function() {
     if (MapsLib.searchrecords != null)
       MapsLib.searchrecords.setMap(null);
@@ -228,13 +234,25 @@ whereClause += " AND 'caseyear' <= '" + $("#year-selected-end").html() + "'";
       MapsLib.searchRadiusCircle = new google.maps.Circle(circleOptions);
   },
 
-  query: function(selectColumns, whereClause, callback) {
+  query: function(selectColumns, whereClause, groupBY, orderBY, limit, callback) {
     var queryStr = [];
     queryStr.push("SELECT " + selectColumns);
     queryStr.push(" FROM " + MapsLib.fusionTableId);
-    queryStr.push(" WHERE " + whereClause);
+
+    if (whereClause != "")
+      queryStr.push(" WHERE " + whereClause);
+
+    if (groupBY != "")
+      queryStr.push(" GROUP BY " + groupBY);
+
+    if (orderBY != "")
+      queryStr.push(" ORDER BY " + orderBY);
+
+     if (limit != "")
+      queryStr.push(" LIMIT " + limit);
 
     var sql = encodeURIComponent(queryStr.join(" "));
+    console.log(sql)
     $.ajax({url: "https://www.googleapis.com/fusiontables/v1/query?sql="+sql+"&callback="+callback+"&key="+MapsLib.googleApiKey, dataType: "jsonp"});
   },
 
@@ -252,7 +270,7 @@ whereClause += " AND 'caseyear' <= '" + $("#year-selected-end").html() + "'";
 
   getCount: function(whereClause) {
     var selectColumns = "Count()";
-    MapsLib.query(selectColumns, whereClause,"MapsLib.displaySearchCount");
+    MapsLib.query(selectColumns, whereClause,"", "", "", "MapsLib.displaySearchCount");
   },
 
   displaySearchCount: function(json) {
