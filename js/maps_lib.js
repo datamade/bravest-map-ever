@@ -25,7 +25,7 @@ var MapsLib = {
 
   //*New Fusion Tables Requirement* API key. found at https://code.google.com/apis/console/
   //*Important* this key is for demonstration purposes. please register your own.
-  googleApiKey:       "AIzaSyAYyANBjl6Tgjrrkb14M4Tiew-PIR6ze6s",
+  googleApiKey:       "AIzaSyAb27ChST-9Vu1foGE4bxV17aF4Aw_tjZ8",
 
   //name of the location column in your Fusion Table.
   //NOTE: if your location column name has spaces in it, surround it with single quotes
